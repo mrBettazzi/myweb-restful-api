@@ -27,9 +27,10 @@ var dbconf = require('./database/DB');
 var api = express();                 
 // configure app to use cors() - this will let us get the data from a different web server
 api.use(cors());
-api.use(compression());
+// configure app to use bodyParser() - // this will let us get the data from a POST
 api.use(bodyParser.urlencoded({ extended: true }));
 api.use(bodyParser.json());
+api.use(compression());
 
 // ignore authentication on the following routes
 /*
@@ -80,8 +81,12 @@ api.listen(port, function(){
 // app.use('/api', router);
 
 // all our models ...
-var Amb = require('./routes/AmbRouter');
+// WAS :
+// var Amb = require('./routes/AmbRouter');
+// NOW IS :
+// loop through all routes and dynamically require them – passing api
+fs.readdirSync(path.join(__dirname, 'routes')).map(file => {
+	require('./routes/' + file);
+});
 
-// configure app to use bodyParser()
-// this will let us get the data from a POST
 
